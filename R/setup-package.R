@@ -1,25 +1,19 @@
 library(tidyverse)
 library(here)
+library(janitor)
 
-# This file brings in assets (data, codebook, setup.Rmd and CSS) from the course assets repo (https://github.com/rfortherestofus/course-assets).
+# This file brings in assets (data, setup.Rmd and CSS) from the assets repo (https://github.com/rfortherestofus/assets).
 
 # Get Data ----------------------------------------------------------------
 
-download.file("https://github.com/rfortherestofus/course-assets/raw/master/data/faketucky-clean-names.csv",
-              destfile = here("data", "faketucky.csv"))
+download.file("https://github.com/rfortherestofus/assets/raw/master/data/nhanes.csv",
+              destfile = here("nhanes.csv")) 
 
-
-# Get Codebook ------------------------------------------------------------
-
-download.file("https://raw.githubusercontent.com/rfortherestofus/course-assets/master/data/faketucky-codebook.txt",
-              destfile = here("data", "faketucky-codebook.txt"))
-
-# Get setup.Rmd -----------------------------------------------------------
-
-download.file("https://github.com/rfortherestofus/course-assets/raw/master/misc/setup.Rmd",
-              destfile = here("slides", "setup.Rmd"))
+nhanes <- read_csv(here("nhanes.csv")) %>% 
+  clean_names() %>% 
+  write_csv(here("nhanes.csv"))
 
 # Get CSS -----------------------------------------------------------------
 
 download.file("https://raw.githubusercontent.com/rfortherestofus/course-assets/master/style/style.css",
-              destfile = here("slides", "style.css"))
+              destfile = here("style.css"))

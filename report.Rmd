@@ -1,0 +1,114 @@
+---
+title: "Report"
+author: "David Keyes"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(skimr)
+```
+
+# Import Data
+
+```{r}
+nhanes <- read_csv("nhanes.csv")
+```
+
+# Data Analysis
+
+
+
+```{r}
+physically_active_education <- nhanes %>% 
+  group_by(education) %>% 
+  summarize(days_active = mean(phys_active_days, na.rm = T)) %>% 
+  drop_na(education)
+
+physically_active_education
+```
+
+
+# Data Visualization
+
+
+## Basic Bar Chart
+
+```{r}
+ggplot(physically_active_education, aes(x = education,
+                                        y = days_active)) +
+  geom_col() + 
+  coord_flip()
+```
+
+## Reordered Bar Chart
+
+```{r}
+ggplot(physically_active_education, aes(x = reorder(education, days_active),
+                                        y = days_active)) +
+  geom_col() + 
+  coord_flip()
+```
+
+## Add Color
+
+```{r}
+ggplot(physically_active_education, aes(x = reorder(education, days_active),
+                                        y = days_active,
+                                        fill = education)) +
+  geom_col() + 
+  coord_flip() 
+```
+
+
+
+
+# Facets
+
+```{r}
+physically_active_education_working <- nhanes %>% 
+  group_by(gender, work) %>% 
+  summarize(days_active = mean(phys_active_days, na.rm = T)) %>% 
+  drop_na(work)
+
+physically_active_education_working
+```
+
+```{r}
+ggplot(physically_active_education_working, aes(x = education,
+                                               y = days_active,
+                                               fill = education)) +
+  geom_col() + 
+  coord_flip() +
+  facet_wrap(~work)
+  
+```
+
+
+
+# Themes
+
+```{r}
+library(ggthemes)
+
+
+ggplot(physically_active_education_working, aes(x = work,
+                                               y = days_active,
+                                               fill = work)) +
+  geom_col() + 
+  coord_flip() +
+  facet_wrap(~gender) +
+  theme_fivethirtyeight() +
+  scale_fill_fivethirtyeight()
+  
+
+
+
+```
+
