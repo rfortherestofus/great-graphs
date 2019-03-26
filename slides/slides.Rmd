@@ -1,0 +1,269 @@
+---
+title: "Getting Started with R"
+# author: "David Keyes <br> R for the Rest of Us"
+output:
+  xaringan::moon_reader:
+    df_print: paged
+    css: ["style.css", "default"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE, 
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      rows.print = 5)
+
+library(tidyverse)
+library(here)
+
+
+```
+
+layout: true
+  
+<div class="dk-footer">
+<span>
+<a href="https://rfortherestofus.com/" target="_blank">R for the Rest of Us
+</a>
+</span>
+</div> 
+
+---
+
+## Why Use R?
+
+--
+
+![](images/why-use-r.png)
+
+---
+
+class: inverse, center, middle, dk-section-title
+
+### Data Visualization
+
+---
+
+
+class: center, middle
+
+![](images/bbc-plots.png)
+
+---
+
+class: center, middle
+
+![](images/ficb-map.png)
+
+---
+
+
+class: center, middle
+
+![](images/sat-math-ridgeline.png)
+
+
+---
+
+class: inverse, center, middle, dk-section-title
+
+### Reproducibility
+
+
+---
+
+class: inverse, center, middle, dk-section-title 
+
+## What is R?
+
+
+---
+
+### Download and Install R
+
+The first thing you need to do is download the R software. Go to the [Comprehensive R Archive Network (aka “CRAN”) website](https://cran.cnr.berkeley.edu/) and download the software for your operating system (Windows, Mac, or Linux).
+
+![](images/download-r.png)
+
+
+---
+
+### RStudio
+
+--
+
+.center[
+![](images/engine-dashboard.png)
+
+.small[Courtesy [Modern Dive](http://moderndive.com/2-getting-started.html#what-are-r-and-rstudio)]
+]
+
+
+---
+
+### Download and Install RStudio
+
+Download RStudio at the [RStudio website](https://www.rstudio.com/products/rstudio/download/#download). Ignore the various versions listed there. All you need is the latest version of RStudio Desktop.
+
+![](images/download-rstudio.png)
+
+
+---
+class: center, middle, dk-section-title
+
+class: inverse, center, middle, dk-section-title 
+
+# Packages
+
+---
+
+### Packages
+
+
+--
+
+.center[
+![](images/phone-apps.png)
+
+.small[Courtesy [Modern Dive](http://moderndive.com/2-getting-started.html#packages)]
+]
+
+???
+
+
+Packages add functionality that is not present in base R. 
+
+They're where much of the power of R is found.
+
+---
+
+class: middle
+
+
+.pull-left[
+
+.center[
+![](images/tidyverse.png)
+]
+
+]
+
+
+.pull-right[
+
+### `tidyverse`
+
+The [`tidyverse`](https://tidyverse.org/) is a collection of packages. 
+
+We'll use [`readr`](https://readr.tidyverse.org/) to import data. 
+
+We'll use [`ggplot2`](https://ggplot2.tidyverse.org/) to visualize data. 
+
+]
+
+
+
+---
+
+class: inverse, center, middle, dk-section-title 
+
+# Working with Data
+
+---
+
+## Import Data
+
+
+```{r echo = FALSE}
+nhanes <- read_csv(here("data", "nhanes.csv"))
+```
+
+```{r eval = FALSE}
+nhanes <- read_csv("data/nhanes.csv")
+```
+
+--
+
+```{r}
+nhanes
+```
+
+
+
+---
+
+## Data Analysis
+
+```{r eval = FALSE}
+nhanes %>% 
+  count(education)
+```
+
+--
+
+```{r echo = FALSE}
+nhanes %>% 
+  count(education)
+```
+
+---
+
+### Data Analysis
+
+```{r}
+physically_active_education <- nhanes %>% 
+  group_by(education) %>% 
+  summarize(days_active = mean(phys_active_days, na.rm = TRUE)) %>% 
+  mutate(days_active = round(days_active, 1)) %>% 
+  drop_na(education)
+```
+
+--
+
+```{r echo = FALSE}
+physically_active_education
+```
+
+
+
+---
+
+class: center, middle, inverse, dk-section-title
+
+# Data Viz
+
+---
+
+## ggplot
+
+.center[
+![](images/ggplot-cheatsheet.png)
+]
+
+---
+
+## The Grammar of Graphics
+
+--
+
+.center[
+![](images/grammar-of-graphics.png)
+]
+
+---
+
+## Facets
+
+
+---
+
+## Themes
+
+

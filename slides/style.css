@@ -144,7 +144,7 @@ div.dk-footer a {
     
 }
 
-.dk-section-title h1 {
+.dk-section-title h1, .dk-section-title h2, .dk-section-title h3 {
   color: #f3f3f3;
   font-size: 100px;
   line-height: 1;

@@ -5,33 +5,40 @@ output: word_document
 ---
 
 ```{r setup, include=FALSE}
+# This is the setup chunk
 knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE)
 ```
 
 ```{r}
+# Here we load packages
 library(tidyverse)
-library(skimr)
 ```
 
 # Import Data
 
 ```{r}
-nhanes <- read_csv("nhanes.csv")
+nhanes <- read_csv("data/nhanes.csv")
 ```
 
 # Data Analysis
 
+```{r}
+nhanes %>% 
+  count(education)
+```
 
 
 ```{r}
 physically_active_education <- nhanes %>% 
   group_by(education) %>% 
-  summarize(days_active = mean(phys_active_days, na.rm = T)) %>% 
+  summarize(days_active = mean(phys_active_days, na.rm = TRUE)) %>% 
+  mutate(days_active = round(days_active, 1)) %>% 
   drop_na(education)
 
 physically_active_education
+
 ```
 
 
@@ -56,59 +63,162 @@ ggplot(physically_active_education, aes(x = reorder(education, days_active),
   coord_flip()
 ```
 
-## Add Color
+## Add Text
+
+```{r}
+ggplot(physically_active_education, aes(x = reorder(education, days_active),
+                                        y = days_active)) +
+  geom_col() + 
+  geom_text(aes(label = days_active),
+            hjust = 1) +
+  coord_flip() 
+```
+
+## Adjust Labels
+
+
+```{r}
+ggplot(physically_active_education, aes(x = reorder(education, days_active),
+                                        y = days_active)) +
+  geom_col() + 
+  geom_text(aes(label = days_active),
+            hjust = 1) +
+  coord_flip() +
+  labs(x = "",
+       y = "Days Active")
+```
+
+## Add Color/Fill
 
 ```{r}
 ggplot(physically_active_education, aes(x = reorder(education, days_active),
                                         y = days_active,
                                         fill = education)) +
   geom_col() + 
-  coord_flip() 
+  geom_text(aes(label = days_active),
+            hjust = 1) +
+  coord_flip() +
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Days Active")
 ```
 
 
+
+
+
+## Highlights
+
+
+```{r}
+library(gghighlight)
+
+ggplot(physically_active_education, aes(x = reorder(education, days_active),
+                                        y = days_active,
+                                        fill = education)) +
+  geom_col() + 
+  gghighlight(days_active == 3.9) +
+  geom_text(aes(label = days_active),
+            hjust = 1) +
+  coord_flip() +
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Days Active")
+```
 
 
 # Facets
 
 ```{r}
-physically_active_education_working <- nhanes %>% 
-  group_by(gender, work) %>% 
-  summarize(days_active = mean(phys_active_days, na.rm = T)) %>% 
-  drop_na(work)
+physically_active_gender_education <- nhanes %>% 
+  group_by(gender, education) %>% 
+  summarize(days_active = mean(phys_active_days, na.rm = TRUE)) %>% 
+  mutate(days_active = round(days_active, 1)) %>% 
+  drop_na(education)
 
-physically_active_education_working
 ```
 
 ```{r}
-ggplot(physically_active_education_working, aes(x = education,
+ggplot(physically_active_gender_education, aes(x = reorder(education, days_active),
                                                y = days_active,
-                                               fill = education)) +
+                                               fill = gender)) +
   geom_col() + 
+  geom_text(aes(label = days_active),
+            hjust = 1) +
   coord_flip() +
-  facet_wrap(~work)
-  
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Days Active") +
+  facet_wrap(~gender) 
 ```
 
 
 
 # Themes
 
+## BBC
+
+```{r}
+library(bbplot)
+
+ggplot(physically_active_gender_education, aes(x = reorder(education, days_active),
+                                               y = days_active,
+                                               fill = gender)) +
+  geom_col() + 
+  geom_text(aes(label = days_active),
+            hjust = 1) +
+  coord_flip() +
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Days Active") +
+  facet_wrap(~gender) +
+  bbc_style()
+
+
+
+
+```
+
+## FiveThirtyEight
 ```{r}
 library(ggthemes)
 
-
-ggplot(physically_active_education_working, aes(x = work,
+ggplot(physically_active_gender_education, aes(x = reorder(education, days_active),
                                                y = days_active,
-                                               fill = work)) +
+                                               fill = gender)) +
   geom_col() + 
+  geom_text(aes(label = days_active),
+            hjust = 1) +
   coord_flip() +
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Days Active") +
   facet_wrap(~gender) +
-  theme_fivethirtyeight() +
-  scale_fill_fivethirtyeight()
+  theme_fivethirtyeight()
+
+
+
+
+```
+
+## Urban Institute
+
+```{r}
+library(urbnthemes)
+
+set_urbn_defaults()
+
+ggplot(physically_active_gender_education, aes(x = reorder(education, days_active),
+                                               y = days_active,
+                                               fill = gender)) +
+  geom_col() + 
+  geom_text(aes(label = days_active),
+            hjust = 1) +
+  coord_flip() +
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Days Active") +
+  facet_wrap(~gender)
   
-
-
-
 ```
 
